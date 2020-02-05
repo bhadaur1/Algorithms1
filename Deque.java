@@ -1,7 +1,8 @@
 import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdOut;
+import java.util.Iterator;
 
-public class Deque<Item> { //implements Iterable<Item> {
+public class Deque<Item> implements Iterable<Item> {
 
     private Node first, last;
     private int m_N;
@@ -10,6 +11,22 @@ public class Deque<Item> { //implements Iterable<Item> {
         Node prev;
         Item item;
         Node next;
+    }
+
+    private class ItemIterator implements Iterator<Item>{
+        private Node current = first;
+        public boolean hasNext(){
+            return (current != null);
+        }
+        public Item next() {
+            if (current == null) throw new java.util.NoSuchElementException("No elements to iterate.");
+            Item item = current.item;
+            current = current.next;
+            return item;
+        }
+        public void remove() { 
+            throw new UnsupportedOperationException("remove operation is not supported in this implementation");
+        }
     }
 
     private void assertItemNotNull(Item item) {
@@ -103,7 +120,9 @@ public class Deque<Item> { //implements Iterable<Item> {
     }
 
     // return an iterator over items in order from front to back
-    // public Iterator<Item> iterator()
+    public Iterator<Item> iterator() {
+        return new ItemIterator();
+    }
 
     // unit testing (required)
     public static void main(String[] args) {
@@ -117,5 +136,9 @@ public class Deque<Item> { //implements Iterable<Item> {
                 StdOut.print(s.removeFirst() + " ");
         }
         StdOut.println("(" + s.size() + " left on stack)");
+        StdOut.println("Testing iterator");
+        for (String ss: s) {
+            StdOut.println(ss);
+        }
     }
 }
