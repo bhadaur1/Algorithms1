@@ -12,6 +12,14 @@ public class Deque<Item> { //implements Iterable<Item> {
         Node next;
     }
 
+    private void assertItemNotNull(Item item) {
+        if (item == null) throw new IllegalArgumentException("Item to be inserted cannot be null.");
+    }
+
+    private void assertDequeNotEmpty() {
+        if (m_N == 0) throw new java.util.NoSuchElementException("Deque is empty.");
+    }
+
     // construct an empty deque
     public Deque() {
         m_N = 0; // no items
@@ -30,12 +38,13 @@ public class Deque<Item> { //implements Iterable<Item> {
 
     // add the item to the front
     public void addFirst(Item item) {
+        assertItemNotNull(item);
         // Create a new node and stage it as to be first node
-       Node oldfirst = first;
-       first = new Node();
-       first.prev = null;
-       first.item = item;
-       first.next = oldfirst;
+        Node oldfirst = first;
+        first = new Node();
+        first.prev = null;
+        first.item = item;
+        first.next = oldfirst;
         // Special case when N=0
         if (m_N == 0)
             last = first;
@@ -46,6 +55,7 @@ public class Deque<Item> { //implements Iterable<Item> {
 
     // add the item to the back
     public void addLast(Item item) {
+        assertItemNotNull(item);
         // Create a new node and stage it as to be last node
         Node oldlast = last;
         last = new Node();
@@ -62,26 +72,32 @@ public class Deque<Item> { //implements Iterable<Item> {
 
     // remove and return the item from the front
     public Item removeFirst() {
+        assertDequeNotEmpty();
         // Store item to return
         Item item = first.item;
         // Advance first to next item
         first = first.next;
         // Set prev of new first to null
-        if (m_N !=1)
+        if (m_N > 1)
             first.prev = null;
+        else
+            last = first;
         m_N = m_N - 1;
         return item;
     }
 
     // remove and return the item from the back
     public Item removeLast() {
+        assertDequeNotEmpty();
         // Store item to return
         Item item = last.item;
         // Advance last to previous item
         last = last.prev;
         // Set next of new last to null
-        if (m_N != 1)
+        if (m_N > 1)
             last.next = null;
+        else
+            first = last;
         m_N = m_N - 1;
         return item;
     }
@@ -96,9 +112,9 @@ public class Deque<Item> { //implements Iterable<Item> {
             String item = StdIn.readString();
             //StdOut.println(item);
             if (!item.equals("-"))
-                s.addFirst(item);
+                s.addLast(item);
             else if (!s.isEmpty())
-                StdOut.print(s.removeLast() + " ");
+                StdOut.print(s.removeFirst() + " ");
         }
         StdOut.println("(" + s.size() + " left on stack)");
     }
